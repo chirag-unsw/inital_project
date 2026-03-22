@@ -1,8 +1,15 @@
 "use client";
 
 import { Plus, Trash2 } from "lucide-react";
-import type { CreatePlacementRulePayload, PlacementType } from "../../../src/types/reach_ads.types";
-import { PLACEMENT_TYPES } from "../../../src/types/reach_ads.types";
+import type { 
+  CreatePlacementRulePayload, 
+  PlacementType, 
+  PlacementPosition 
+} from "../../../src/types/reach_ads.types";
+import { 
+  PLACEMENT_TYPES, 
+  PLACEMENT_POSITIONS 
+} from "../../../src/types/reach_ads.types";
 
 interface PlacementRulesFormProps {
   rules: CreatePlacementRulePayload[];
@@ -16,9 +23,18 @@ const placementLabels: Record<PlacementType, string> = {
   fallback: "Fallback",
 };
 
+// Added labels for the new positions
+const positionLabels: Record<PlacementPosition, string> = {
+  top_left: "Top Left",
+  bottom_left: "Bottom Left",
+  top_right: "Top Right",
+  bottom_right: "Bottom Right",
+};
+
 function emptyRule(): CreatePlacementRulePayload {
   return {
     placementType: "mid_conversation",
+    position: "bottom_left", // Defaulting to bottom right, adjust if needed
     priority: 0,
     maxImpressionsPerSession: 2,
     cooldownMinutes: 10,
@@ -46,7 +62,7 @@ export default function PlacementRulesForm({ rules, onChange }: PlacementRulesFo
         <button
           type="button"
           onClick={addRule}
-          className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 font-medium"
+          className="inline-flex items-center gap-1.5 text-sm text-purple-800 hover:text-purple-800 font-medium"
         >
           <Plus className="w-4 h-4" />
           Add Rule
@@ -87,11 +103,30 @@ export default function PlacementRulesForm({ rules, onChange }: PlacementRulesFo
                 onChange={(e) =>
                   updateRule(index, "placementType", e.target.value)
                 }
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-600 focus:ring-1 focus:ring-purple-600"
               >
                 {PLACEMENT_TYPES.map((type) => (
                   <option key={type} value={type}>
                     {placementLabels[type]}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Position
+              </label>
+              <select
+                value={rule.position || "bottom_right"}
+                onChange={(e) =>
+                  updateRule(index, "position", e.target.value)
+                }
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-600 focus:ring-1 focus:ring-purple-600"
+              >
+                {PLACEMENT_POSITIONS.map((pos) => (
+                  <option key={pos} value={pos}>
+                    {positionLabels[pos]}
                   </option>
                 ))}
               </select>
@@ -108,7 +143,7 @@ export default function PlacementRulesForm({ rules, onChange }: PlacementRulesFo
                 onChange={(e) =>
                   updateRule(index, "priority", parseInt(e.target.value) || 0)
                 }
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-600 focus:ring-1 focus:ring-purple-600"
               />
             </div>
 
@@ -128,7 +163,7 @@ export default function PlacementRulesForm({ rules, onChange }: PlacementRulesFo
                   )
                 }
                 placeholder="Unlimited"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-600 focus:ring-1 focus:ring-purple-600"
               />
             </div>
 
@@ -148,17 +183,17 @@ export default function PlacementRulesForm({ rules, onChange }: PlacementRulesFo
                   )
                 }
                 placeholder="None"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-600 focus:ring-1 focus:ring-purple-600"
               />
             </div>
           </div>
 
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex items-center gap-2 cursor-pointer pt-2">
             <input
               type="checkbox"
               checked={rule.enabled !== false}
               onChange={(e) => updateRule(index, "enabled", e.target.checked)}
-              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="rounded border-gray-300 text-purple-800 focus:ring-purple-600"
             />
             <span className="text-sm text-gray-600">Enabled</span>
           </label>
